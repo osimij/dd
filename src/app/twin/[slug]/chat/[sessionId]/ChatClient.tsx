@@ -289,10 +289,10 @@ export default function ChatClient({ twin, session, initialMessages, hasFeedback
       finalTranscriptRef.current = ''
       setRealtimeActive(false)
 
-      // Open proxy websocket (keeps API key server-side)
+      // Open proxy websocket (Cloudflare Worker keeps API key server-side)
       let ws: WebSocket | null = null
       try {
-        ws = new WebSocket('/api/voice/realtime-proxy')
+        ws = new WebSocket('wss://scribe-proxy.osimijasur.workers.dev')
         wsRef.current = ws
 
         let wsReady = false
