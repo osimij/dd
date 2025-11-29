@@ -1,26 +1,363 @@
+/* ═══════════════════════════════════════════════════════════════════
+   CUSTOM FONTS - Must be first
+   DM Sans for body, Cormorant Garamond for titles
+   ═══════════════════════════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #FAF7F2;
+  --foreground: #2C2419;
+  --muted: #8B7355;
+  --accent: #6B5344;
+  --border: #E5DDD0;
+  --surface: #F0EBE3;
+  --scrollbar: #D4C4B0;
+  --scrollbar-hover: #C4B4A0;
+  --selection-bg: rgba(107, 83, 68, 0.2);
+  --placeholder: #A69080;
+  --glass-bg: rgba(250, 247, 242, 0.8);
+  --orb-glow: rgba(107, 83, 68, 0.15);
+  --orb-glow-strong: rgba(107, 83, 68, 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #1A1714;
+    --foreground: #E8E2D9;
+    --muted: #A69888;
+    --accent: #C4A88A;
+    --border: #3D352C;
+    --surface: #252118;
+    --scrollbar: #4A4038;
+    --scrollbar-hover: #5A5048;
+    --selection-bg: rgba(196, 168, 138, 0.25);
+    --placeholder: #7A7068;
+    --glass-bg: rgba(26, 23, 20, 0.85);
+    --orb-glow: rgba(196, 168, 138, 0.15);
+    --orb-glow-strong: rgba(196, 168, 138, 0.3);
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Serif for titles and names */
+.font-serif {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CUSTOM SCROLLBAR - Warm, subtle
+   ═══════════════════════════════════════════════════════════════════ */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-hover);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SELECTION - Warm highlight
+   ═══════════════════════════════════════════════════════════════════ */
+::selection {
+  background: var(--selection-bg);
+  color: var(--foreground);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SVG ANIMATIONS - Organic drawing effect
+   ═══════════════════════════════════════════════════════════════════ */
+@keyframes draw {
+  from {
+    stroke-dasharray: 600;
+    stroke-dashoffset: 600;
+  }
+  to {
+    stroke-dasharray: 600;
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-draw {
+  animation: draw 3s ease-out forwards;
+}
+
+.animate-draw-delayed {
+  animation: draw 3s ease-out 0.5s forwards;
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   MATHEMATICAL CURVE ANIMATIONS
+   ═══════════════════════════════════════════════════════════════════ */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 120s linear infinite;
+}
+
+@keyframes wave {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.animate-wave {
+  animation: wave 4s ease-in-out infinite;
+}
+
+.animate-wave-reverse {
+  animation: wave 4s ease-in-out infinite reverse;
+  animation-delay: -2s;
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 3s ease-in-out infinite;
+}
+
+@keyframes morph {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.02) rotate(1deg); }
+  50% { transform: scale(0.98) rotate(-1deg); }
+  75% { transform: scale(1.01) rotate(0.5deg); }
+}
+
+.animate-morph {
+  animation: morph 8s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SUBTLE FLOAT ANIMATION - For organic elements
+   ═══════════════════════════════════════════════════════════════════ */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAGE TRANSITIONS
+   ═══════════════════════════════════════════════════════════════════ */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.8s ease-out forwards;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   LINK UNDERLINE ANIMATION
+   ═══════════════════════════════════════════════════════════════════ */
+.link-underline {
+  position: relative;
+}
+
+.link-underline::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: currentColor;
+  transition: width 0.5s ease;
+}
+
+.link-underline:hover::after {
+  width: 100%;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FORM ELEMENTS - Clean, minimal
+   ═══════════════════════════════════════════════════════════════════ */
+input, textarea, select {
+  background: transparent;
+  border: 1px solid var(--border);
+  padding: 1rem;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--foreground);
+  transition: border-color 0.3s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--placeholder);
+  font-weight: 300;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   BUTTON BASE - Will use inline styles mostly, this is fallback
+   ═══════════════════════════════════════════════════════════════════ */
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   UTILITY CLASSES
+   ═══════════════════════════════════════════════════════════════════ */
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Responsive container padding */
+.container-padding {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+@media (min-width: 768px) {
+  .container-padding {
+    padding-left: 4rem;
+    padding-right: 4rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   GLASS EFFECT - Warm glass
+   ═══════════════════════════════════════════════════════════════════ */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   LEGACY CLASSES - For other pages compatibility
+   ═══════════════════════════════════════════════════════════════════ */
+.animated-gradient {
+  background: var(--background);
+}
+
+.gradient-text {
+  color: var(--accent);
+}
+
+.pulse-glow {
+  box-shadow: 0 0 60px var(--orb-glow);
+}
+
+.animate-fade-in,
+.animate-fade-in-delay-1,
+.animate-fade-in-delay-2,
+.animate-fade-in-delay-3 {
+  animation: fadeUp 0.6s ease-out forwards;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   VOICE ORB ANIMATIONS - For the call interface
+   ═══════════════════════════════════════════════════════════════════ */
+@keyframes orb-pulse {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% { 
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+@keyframes orb-breathe {
+  0%, 100% { 
+    box-shadow: 0 0 60px var(--orb-glow), 0 0 120px var(--orb-glow);
+  }
+  50% { 
+    box-shadow: 0 0 80px var(--orb-glow-strong), 0 0 160px var(--orb-glow);
+  }
+}
+
+@keyframes orb-speaking {
+  0%, 100% { 
+    box-shadow: 0 0 60px var(--orb-glow-strong), 0 0 120px var(--orb-glow);
+    transform: scale(1);
+  }
+  25% { 
+    box-shadow: 0 0 80px var(--orb-glow-strong), 0 0 140px var(--orb-glow);
+    transform: scale(1.02);
+  }
+  50% { 
+    box-shadow: 0 0 100px var(--orb-glow-strong), 0 0 160px var(--orb-glow);
+    transform: scale(1.04);
+  }
+  75% { 
+    box-shadow: 0 0 70px var(--orb-glow-strong), 0 0 130px var(--orb-glow);
+    transform: scale(1.01);
+  }
+}
+
+.animate-orb-pulse {
+  animation: orb-pulse 3s ease-in-out infinite;
+}
+
+.animate-orb-breathe {
+  animation: orb-breathe 4s ease-in-out infinite;
+}
+
+.animate-orb-speaking {
+  animation: orb-speaking 0.8s ease-in-out infinite;
 }
