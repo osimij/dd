@@ -20,19 +20,24 @@ export default async function DashboardPage() {
 
   if (!twin) redirect('/onboarding')
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const twinData = twin as any
+
   // Get session stats
   const { count: sessionCount } = await supabase
     .from('sessions')
     .select('*', { count: 'exact', head: true })
-    .eq('twin_id', twin.id)
+    .eq('twin_id', twinData.id)
 
   const { data: feedbackData } = await supabase
     .from('session_feedback')
     .select('rating, sessions!inner(twin_id)')
-    .eq('sessions.twin_id', twin.id)
+    .eq('sessions.twin_id', twinData.id)
 
-  const avgRating = feedbackData && feedbackData.length > 0
-    ? feedbackData.reduce((sum, f) => sum + f.rating, 0) / feedbackData.length
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const fbData = feedbackData as any[] | null
+  const avgRating = fbData && fbData.length > 0
+    ? fbData.reduce((sum: number, f: { rating: number }) => sum + f.rating, 0) / fbData.length
     : null
 
   return (

@@ -35,7 +35,7 @@ export default function TwinPublicClient({ twin }: Props) {
       .insert({
         twin_id: twin.id,
         employer_name: employerName.trim(),
-      })
+      } as never)
       .select()
       .single()
 
@@ -46,7 +46,9 @@ export default function TwinPublicClient({ twin }: Props) {
       return
     }
 
-    router.push(`/twin/${twin.public_slug}/chat/${session.id}`)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const sessionData = session as any
+    router.push(`/twin/${twin.public_slug}/chat/${sessionData.id}`)
   }
 
   const initials = twin.name.split(' ').map(n => n[0]).join('').slice(0, 2)

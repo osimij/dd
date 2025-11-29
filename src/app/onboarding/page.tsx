@@ -134,14 +134,16 @@ export default function OnboardingPage() {
           skills: profile.skills,
           bio: profile.bio,
           public_slug: generateSlug(profile.name),
-        })
+        } as never)
         .select()
         .single()
 
       if (twinError) throw twinError
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const twinData = twin as any
       const answersToInsert = QUESTIONS.map(q => ({
-        twin_id: twin.id,
+        twin_id: twinData.id,
         question_type: q.type,
         question_text: q.text,
         answer_text: answers[q.type] || '',
@@ -149,7 +151,7 @@ export default function OnboardingPage() {
 
       const { error: answersError } = await supabase
         .from('twin_answers')
-        .insert(answersToInsert)
+        .insert(answersToInsert as never)
 
       if (answersError) throw answersError
 

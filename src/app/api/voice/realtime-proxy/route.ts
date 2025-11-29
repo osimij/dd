@@ -1,8 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest } from 'next/server'
 
 export const runtime = 'edge'
 
 const ELEVEN_WS = 'wss://api.elevenlabs.io/v1/speech-to-text/realtime'
+
+// Cloudflare Workers / Edge runtime types
+declare const WebSocketPair: { new (): { 0: WebSocket; 1: WebSocket } } | undefined
 
 export async function GET(request: NextRequest) {
   if (request.headers.get('upgrade') !== 'websocket') {
@@ -15,19 +19,16 @@ export async function GET(request: NextRequest) {
   }
 
   // Guard against runtimes without WebSocketPair (e.g., non-edge dev fallback)
-  // @ts-ignore - runtime availability check
   if (typeof WebSocketPair === 'undefined') {
     return new Response('WebSocketPair not supported in this runtime', { status: 501 })
   }
 
   // Provided by the Edge runtime
-  // @ts-expect-error WebSocketPair is available in the edge runtime
   const { 0: client, 1: server } = new WebSocketPair()
   const upstream = new WebSocket(ELEVEN_WS)
 
   // Accept the downstream connection from browser
-  // @ts-expect-error accept is provided by edge runtime WebSocket
-  server.accept()
+  ;(server as any).accept()
 
   upstream.addEventListener('open', () => {
     // Configure ElevenLabs realtime
@@ -43,7 +44,7 @@ export async function GET(request: NextRequest) {
     )
   })
 
-  upstream.addEventListener('message', (event) => {
+  upstream.addEventListener('message', (event: MessageEvent) => {
     if (server.readyState === WebSocket.OPEN) {
       server.send(event.data)
     }
@@ -55,14 +56,14 @@ export async function GET(request: NextRequest) {
     }
   })
 
-  upstream.addEventListener('error', (err) => {
+  upstream.addEventListener('error', (err: Event) => {
     console.error('ElevenLabs upstream error:', err)
     if (server.readyState === WebSocket.OPEN) {
       server.close(1011, 'upstream error')
     }
   })
 
-  server.addEventListener('message', (event) => {
+  server.addEventListener('message', (event: MessageEvent) => {
     // Forward audio frames or control messages to ElevenLabs
     if (upstream.readyState === WebSocket.OPEN) {
       upstream.send(event.data)
@@ -75,7 +76,7 @@ export async function GET(request: NextRequest) {
     }
   })
 
-  server.addEventListener('error', (err) => {
+  server.addEventListener('error', (err: Event) => {
     console.error('Client websocket error:', err)
     if (upstream.readyState === WebSocket.OPEN) {
       upstream.close()
@@ -84,6 +85,7 @@ export async function GET(request: NextRequest) {
 
   return new Response(null, {
     status: 101,
+    // @ts-expect-error webSocket is available in Cloudflare Workers edge runtime
     webSocket: client,
   })
 }

@@ -39,8 +39,10 @@ export async function POST(request: Request) {
       )
     }
 
-    const twin = session.twins
-    const twinAnswers = twin.twin_answers
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const twin = (session as any).twins
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const twinAnswers = twin.twin_answers as any[]
 
     // Check message count (limit to 10)
     const { count } = await supabase
@@ -61,7 +63,7 @@ export async function POST(request: Request) {
       session_id,
       sender: 'employer',
       message_text: question_text,
-    })
+    } as never)
 
     // Build context for the AI
     const qaContext = twinAnswers
@@ -105,7 +107,7 @@ Do not break character or mention that you are an AI.`
       session_id,
       sender: 'twin',
       message_text: answerText,
-    })
+    } as never)
 
     return NextResponse.json({ answer: answerText })
   } catch (error) {

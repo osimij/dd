@@ -19,12 +19,15 @@ export default async function ChatPage({ params }: Props) {
 
   if (!twin) notFound()
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const twinData = twin as any
+
   // Get session
   const { data: session } = await supabase
     .from('sessions')
     .select('*')
     .eq('id', sessionId)
-    .eq('twin_id', twin.id)
+    .eq('twin_id', twinData.id)
     .single()
 
   if (!session) notFound()

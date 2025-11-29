@@ -44,7 +44,7 @@ function VoiceOrb({
   isRecording: boolean
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const animationRef = useRef<number>()
+  const animationRef = useRef<number>(undefined)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -511,11 +511,11 @@ export default function ChatClient({ twin, session, initialMessages, hasFeedback
             }
             const onError = () => {
               sourceBuffer.removeEventListener('error', onError)
-              reject(sourceBuffer.error || new Error('SourceBuffer error'))
+              reject(new Error('SourceBuffer error'))
             }
             sourceBuffer.addEventListener('updateend', onUpdate, { once: true })
             sourceBuffer.addEventListener('error', onError, { once: true })
-            sourceBuffer.appendBuffer(chunk)
+            sourceBuffer.appendBuffer(chunk.buffer as ArrayBuffer)
           })
         })
         return sourceBufferReadyRef.current

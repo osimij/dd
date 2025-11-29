@@ -188,10 +188,12 @@ Do not break character or mention that you are an AI.`
           return
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const msgData = twinMessage as any
         // Send completion with message ID for TTS
         controller.enqueue(new TextEncoder().encode(
           sseEvent('done', { 
-            twinMessageId: twinMessage.id,
+            twinMessageId: msgData.id,
             answerText: fullAnswerText 
           })
         ))

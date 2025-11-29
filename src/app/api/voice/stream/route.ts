@@ -24,30 +24,38 @@ export async function GET(req: NextRequest) {
     return new Response('Message not found', { status: 404 })
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const msg = twinMsg as any
+
   // 2) Get session to find twin_id
   const { data: session, error: sessionErr } = await supabase
     .from('sessions')
     .select('twin_id')
-    .eq('id', twinMsg.session_id)
+    .eq('id', msg.session_id)
     .single()
 
   if (sessionErr || !session) {
     return new Response('Session not found', { status: 404 })
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const sess = session as any
+
   // 3) Get twin's voice_id
   const { data: twin, error: twinErr } = await supabase
     .from('twins')
     .select('elevenlabs_voice_id')
-    .eq('id', session.twin_id)
+    .eq('id', sess.twin_id)
     .single()
 
-  if (twinErr || !twin || !twin.elevenlabs_voice_id) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const t = twin as any
+  if (twinErr || !t || !t.elevenlabs_voice_id) {
     return new Response('Twin voice not configured', { status: 400 })
   }
 
-  const text = twinMsg.message_text as string
-  const voiceId = twin.elevenlabs_voice_id as string
+  const text = msg.message_text as string
+  const voiceId = t.elevenlabs_voice_id as string
 
   // 4) Call ElevenLabs streaming TTS endpoint
   const elevenKey = process.env.ELEVENLABS_API_KEY

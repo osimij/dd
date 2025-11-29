@@ -56,7 +56,7 @@ export async function POST(request: Request) {
         session_id,
         rating,
         comment_text: comment_text || null,
-      })
+      } as never)
 
     if (insertError) {
       console.error('Error inserting feedback:', insertError)
